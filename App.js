@@ -12,6 +12,11 @@ import {
   View
 } from 'react-native';
 
+import {
+  LoginButton,
+  AccessToken
+} from 'react-native-fbsdk';
+
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -33,6 +38,23 @@ export default class App extends Component<Props> {
         <Text style={styles.instructions}>
           {instructions}
         </Text>
+        <LoginButton
+          onLoginFinished={
+            (error, result) => {
+              if (error) {
+                alert("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                alert("login is cancelled by user.");
+              } else {
+                AccessToken.getCurrentAccessToken().then(
+                  (data) => {
+                    alert('Logged in')
+                  }
+                )
+              }
+            }
+          }
+          onLogoutFinished={() => alert('Logged out')} />
       </View>
     );
   }
