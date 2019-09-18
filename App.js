@@ -1,80 +1,111 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
+ *
+ * @format
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, {Fragment} from 'react';
 import {
-  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
-import {
-  LoginButton,
-  AccessToken
-} from 'react-native-fbsdk';
+import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
+import {LoginButton, AccessToken} from 'react-native-fbsdk';
 
 const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
+  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
+  android:
+    'Double tap R on your keyboard to reload,\n' +
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-        <LoginButton
-          onLoginFinished={
-            (error, result) => {
-              if (error) {
-                alert("login has error: " + result.error);
-              } else if (result.isCancelled) {
-                alert("login is cancelled by user.");
-              } else {
-                AccessToken.getCurrentAccessToken().then(
-                  (data) => {
-                    alert('Logged in')
-                  }
-                )
-              }
-            }
-          }
-          onLogoutFinished={() => alert('Logged out')} />
-      </View>
-    );
-  }
-}
+const App = () => {
+  return (
+    <Fragment>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}>
+          <Header />
+          {global.HermesInternal == null ? null : (
+            <View style={styles.engine}>
+              <Text style={styles.footer}>Engine: Hermes</Text>
+            </View>
+          )}
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Step One</Text>
+              <Text style={styles.sectionDescription}>
+                Edit <Text style={styles.highlight}>App.js</Text> to change this
+                screen and then come back to see your edits.
+              </Text>
+            </View>
+            <LoginButton
+              onLoginFinished={(error, result) => {
+                if (error) {
+                  alert('login has error: ' + result.error);
+                } else if (result.isCancelled) {
+                  alert('login is cancelled by user.');
+                } else {
+                  AccessToken.getCurrentAccessToken().then(data => {
+                    alert('Logged in');
+                  });
+                }
+              }}
+              onLogoutFinished={() => alert('Logged out')}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Fragment>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  scrollView: {
+    backgroundColor: Colors.lighter,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  engine: {
+    position: 'absolute',
+    right: 0,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  body: {
+    backgroundColor: Colors.white,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    color: Colors.dark,
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+  footer: {
+    color: Colors.dark,
+    fontSize: 12,
+    fontWeight: '600',
+    padding: 4,
+    paddingRight: 12,
+    textAlign: 'right',
   },
 });
+
+export default App;
