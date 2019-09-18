@@ -8,8 +8,8 @@
 
 import React, {Fragment} from 'react';
 import {
+  Alert,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -19,60 +19,51 @@ import {
 import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
 import {LoginButton, AccessToken} from 'react-native-fbsdk';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
 const App = () => {
   return (
     <Fragment>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
+        <Header />
+        {global.HermesInternal == null ? null : (
+          <View style={styles.engine}>
+            <Text style={styles.footer}>Engine: Hermes</Text>
+          </View>
+        )}
+        <View style={styles.body}>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Step One</Text>
+            <Text style={styles.sectionDescription}>
+              Edit <Text style={styles.highlight}>App.js</Text> to change this
+              screen and then come back to see your edits.
+            </Text>
+          </View>
+          <View
+            style={[styles.sectionContainer, styles.facebookButtonContainer]}>
             <LoginButton
               onLoginFinished={(error, result) => {
                 if (error) {
-                  alert('login has error: ' + result.error);
+                  Alert.alert('Login has error', result.error);
                 } else if (result.isCancelled) {
-                  alert('login is cancelled by user.');
+                  Alert.alert('', 'Login is cancelled by user');
                 } else {
                   AccessToken.getCurrentAccessToken().then(data => {
-                    alert('Logged in');
+                    Alert.alert('', 'Logged in successfully');
                   });
                 }
               }}
-              onLogoutFinished={() => alert('Logged out')}
+              onLogoutFinished={() =>
+                Alert.alert('', 'Logged out successfully')
+              }
             />
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </Fragment>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
   engine: {
     position: 'absolute',
     right: 0,
@@ -97,6 +88,10 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  facebookButtonContainer: {
+    alignItems: 'center',
+    paddingBottom: 24,
   },
   footer: {
     color: Colors.dark,
